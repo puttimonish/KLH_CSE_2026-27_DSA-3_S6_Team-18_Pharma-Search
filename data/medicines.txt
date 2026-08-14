@@ -1,0 +1,69 @@
+Medicine: Paracetamol
+Manufacturer: Sun Pharma
+Dosage: 500 mg
+Category: Analgesic
+Uses: Relief of fever and mild to moderate pain
+Substitutes: Crocin, Calpol
+
+Medicine: Amoxicillin
+Manufacturer: Cipla
+Dosage: 500 mg
+Category: Antibiotic
+Uses: Treatment of bacterial infections
+Substitutes: Mox, Novamox
+
+Medicine: Azithromycin
+Manufacturer: Alembic Pharmaceuticals
+Dosage: 500 mg
+Category: Antibiotic
+Uses: Treatment of bacterial infections
+Substitutes: Azithral, Zithromax
+
+Medicine: Cetirizine
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 10 mg
+Category: Antihistamine
+Uses: Relief from allergy symptoms
+Substitutes: Cetzine, Zyrtec
+
+Medicine: Ibuprofen
+Manufacturer: Abbott
+Dosage: 400 mg
+Category: NSAID
+Uses: Relief of pain, inflammation and fever
+Substitutes: Brufen, Advil
+
+Medicine: Omeprazole
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 20 mg
+Category: Proton Pump Inhibitor
+Uses: Treatment of acidity and acid reflux
+Substitutes: Omez, Prilosec
+
+Medicine: Pantoprazole
+Manufacturer: Sun Pharma
+Dosage: 40 mg
+Category: Proton Pump Inhibitor
+Uses: Treatment of acidity and gastroesophageal reflux
+Substitutes: Pantocid, Protonix
+
+Medicine: Metformin
+Manufacturer: USV Private Limited
+Dosage: 500 mg
+Category: Antidiabetic
+Uses: Management of type 2 diabetes
+Substitutes: Glycomet, Glucophage
+
+Medicine: Amlodipine
+Manufacturer: Cipla
+Dosage: 5 mg
+Category: Antihypertensive
+Uses: Management of high blood pressure
+Substitutes: Amlong, Norvasc
+
+Medicine: Atorvastatin
+Manufacturer: Zydus Lifesciences
+Dosage: 10 mg
+Category: Statin
+Uses: Management of high cholesterol
+Substitutes: Atorva, Lipitor
