@@ -1,0 +1,159 @@
+Medicine: Paracetamol
+Manufacturer: Sun Pharma
+Dosage: 500 mg
+Category: Analgesic
+Uses: Relief of fever and mild to moderate pain
+Substitutes: Crocin, Calpol
+Keywords: fever, pain, headache, analgesic, antipyretic
+
+Medicine: Amoxicillin
+Manufacturer: Cipla
+Dosage: 500 mg
+Category: Antibiotic
+Uses: Treatment of bacterial infections
+Substitutes: Mox, Novamox
+Keywords: antibiotic, bacterial infection, amoxicillin, infection
+
+Medicine: Azithromycin
+Manufacturer: Alembic Pharmaceuticals
+Dosage: 500 mg
+Category: Antibiotic
+Uses: Treatment of certain bacterial infections
+Substitutes: Azithral, Zithromax
+Keywords: antibiotic, bacterial infection, azithromycin, infection
+
+Medicine: Cetirizine
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 10 mg
+Category: Antihistamine
+Uses: Relief from common allergy symptoms
+Substitutes: Cetzine, Zyrtec
+Keywords: allergy, antihistamine, sneezing, itching, cetirizine
+
+Medicine: Ibuprofen
+Manufacturer: Abbott
+Dosage: 400 mg
+Category: NSAID
+Uses: Relief of pain, inflammation and fever
+Substitutes: Brufen, Advil
+Keywords: pain, inflammation, fever, NSAID, ibuprofen
+
+Medicine: Omeprazole
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 20 mg
+Category: Proton Pump Inhibitor
+Uses: Management of acidity and acid reflux
+Substitutes: Omez, Prilosec
+Keywords: acidity, reflux, stomach, PPI, omeprazole
+
+Medicine: Pantoprazole
+Manufacturer: Sun Pharma
+Dosage: 40 mg
+Category: Proton Pump Inhibitor
+Uses: Management of acidity and gastroesophageal reflux
+Substitutes: Pantocid, Protonix
+Keywords: acidity, reflux, stomach, PPI, pantoprazole
+
+Medicine: Metformin
+Manufacturer: USV Private Limited
+Dosage: 500 mg
+Category: Antidiabetic
+Uses: Management of type 2 diabetes
+Substitutes: Glycomet, Glucophage
+Keywords: diabetes, blood sugar, antidiabetic, metformin
+
+Medicine: Amlodipine
+Manufacturer: Cipla
+Dosage: 5 mg
+Category: Antihypertensive
+Uses: Management of high blood pressure
+Substitutes: Amlong, Norvasc
+Keywords: blood pressure, hypertension, antihypertensive, amlodipine
+
+Medicine: Atorvastatin
+Manufacturer: Zydus Lifesciences
+Dosage: 10 mg
+Category: Statin
+Uses: Management of high cholesterol
+Substitutes: Atorva, Lipitor
+Keywords: cholesterol, statin, lipid, atorvastatin
+
+Medicine: Pantoprazole
+Manufacturer: Cipla
+Dosage: 40 mg
+Category: Proton Pump Inhibitor
+Uses: Management of acid-related stomach conditions
+Substitutes: Pantocid, Protonix
+Keywords: acidity, acid, reflux, stomach, pantoprazole
+
+Medicine: Diclofenac
+Manufacturer: Novartis
+Dosage: 50 mg
+Category: NSAID
+Uses: Relief of pain and inflammation
+Substitutes: Voveran, Voltaren
+Keywords: pain, inflammation, NSAID, diclofenac
+
+Medicine: Levocetirizine
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 5 mg
+Category: Antihistamine
+Uses: Relief of allergy-related symptoms
+Substitutes: Levocet, Xyzal
+Keywords: allergy, antihistamine, sneezing, itching, levocetirizine
+
+Medicine: Montelukast
+Manufacturer: Cipla
+Dosage: 10 mg
+Category: Leukotriene Receptor Antagonist
+Uses: Management of certain allergic and respiratory symptoms
+Substitutes: Montair, Singulair
+Keywords: allergy, respiratory, asthma, montelukast
+
+Medicine: Glimepiride
+Manufacturer: Sanofi
+Dosage: 2 mg
+Category: Antidiabetic
+Uses: Management of type 2 diabetes
+Substitutes: Amaryl, Glimy
+Keywords: diabetes, blood sugar, antidiabetic, glimepiride
+
+Medicine: Losartan
+Manufacturer: Sun Pharma
+Dosage: 50 mg
+Category: Antihypertensive
+Uses: Management of high blood pressure
+Substitutes: Losar, Cozaar
+Keywords: blood pressure, hypertension, antihypertensive, losartan
+
+Medicine: Rosuvastatin
+Manufacturer: AstraZeneca
+Dosage: 10 mg
+Category: Statin
+Uses: Management of high cholesterol
+Substitutes: Rosuvas, Crestor
+Keywords: cholesterol, statin, lipid, rosuvastatin
+
+Medicine: Famotidine
+Manufacturer: Dr. Reddy's Laboratories
+Dosage: 20 mg
+Category: H2 Receptor Antagonist
+Uses: Management of acidity and acid-related conditions
+Substitutes: Famocid, Pepcid
+Keywords: acidity, stomach, acid, H2 blocker, famotidine
+
+Medicine: Doxycycline
+Manufacturer: Sun Pharma
+Dosage: 100 mg
+Category: Antibiotic
+Uses: Treatment of certain bacterial infections
+Substitutes: Doxy, Doxicip
+Keywords: antibiotic, bacterial infection, doxycycline, infection
+
+Medicine: Ondansetron
+Manufacturer: Cipla
+Dosage: 4 mg
+Category: Antiemetic
+Uses: Prevention and management of nausea and vomiting
+Substitutes: Ondem, Zofran
+Keywords: nausea, vomiting, antiemetic, ondansetron
