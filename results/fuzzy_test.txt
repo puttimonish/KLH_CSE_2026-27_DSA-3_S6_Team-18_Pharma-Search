@@ -1,0 +1,31 @@
+PHARMA SEARCH - REVIEW-2 FUZZY SEARCH TEST
+==========================================
+
+Algorithm:
+Edit Distance using Dynamic Programming
+(Wagner-Fischer approach)
+
+Corpus:
+data/medicines.txt
+
+Corpus Size:
+20 medicine records
+
+Test Query:
+Paracetmol
+
+Expected Behavior:
+Identify the closest medicine name despite a spelling error.
+
+Observed Result:
+Medicine: Paracetamol
+Edit Distance: 1
+
+Interpretation:
+The query differs from "Paracetamol" by one edit operation.
+
+Total Fuzzy Matches:
+1
+
+Status:
+PASS

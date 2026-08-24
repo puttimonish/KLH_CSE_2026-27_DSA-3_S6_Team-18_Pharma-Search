@@ -1,0 +1,35 @@
+PHARMA SEARCH - REVIEW-2 SIMILARITY TEST
+========================================
+
+Algorithm:
+Cosine Similarity
+
+Corpus:
+data/medicines.txt
+
+Corpus Size:
+20 medicine records
+
+Test Query:
+fever pain
+
+Observed Ranking:
+
+Rank 1:
+Medicine: Paracetamol
+Cosine Similarity: 0.4851
+
+Rank 2:
+Medicine: Ibuprofen
+Cosine Similarity: 0.4781
+
+Rank 3:
+Medicine: Diclofenac
+Cosine Similarity: 0.2540
+
+Expected Behavior:
+Rank medicine records according to their textual similarity
+to the user's query.
+
+Status:
+PASS

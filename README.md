@@ -1,86 +1,78 @@
 # Pharma Search
 
-## DSA-3 Project
+## Data Structures and Algorithms - 3
 
-### Team Details
-
-| Team Member | Student ID |
-|---|---|
-| PUTTI MONISH | 2520030395 |
-| DUMPALA HEMASAI | 2520030599 |
-| MUTHANA NIKHIL REDDY | 2520030560 |
-
-**Team Number:** Team-18  
-**Academic Year:** 2026-27  
-**Section:** S6  
-**Course:** Data Structures and Algorithms - 3 (DSA-3)  
-**Supervisor:** Dr. V. Sireesha
+**Course Code:** 25CS2103E  
+**Project:** Pharma Search  
+**Team:** 18  
+**Branch:** monish
 
 ---
 
-## Project Abstract
+## 1. Project Overview
 
-Pharmacies and hospitals maintain large amounts of information about medicines, including medicine names, manufacturers, dosage information, substitutes, and other related details. Searching through such information manually can be time-consuming and inefficient.
+Pharma Search is an intelligent medicine search system designed to search and retrieve relevant medicine information from a structured medicine corpus.
 
-**Pharma Search** is an intelligent medicine search system designed to help users quickly locate relevant medicine information from a text-based medicine corpus. The project focuses on applying Data Structures and Algorithms concepts to perform efficient searching and pattern matching.
+The system demonstrates multiple string-processing and information-retrieval techniques required for the project:
 
-The system uses Java for implementation and text files for storing and reading medicine data. String and pattern matching algorithms are applied to search medicine names and related information efficiently.
+- KMP Pattern Matching
+- Fuzzy Search using Edit Distance
+- Similarity Search using Cosine Similarity
 
-The project demonstrates the practical application of Data Structures and Algorithms to solve a real-world search problem while maintaining a simple file-based data storage approach.
-
----
-
-## Objectives
-
-- Develop an efficient medicine search system.
-- Store medicine information using text files.
-- Read and process medicine data using Java file handling.
-- Implement String/Pattern Matching algorithms on the medicine corpus.
-- Compare search results and algorithm performance.
-- Provide fast and relevant medicine searches.
+The project currently represents the partial implementation prepared for Review-2.
 
 ---
 
-## Technologies Used
+## 2. Problem Statement
 
-- **Programming Language:** Java
-- **Data Storage:** TXT/Text Files
-- **File Handling:** Java File I/O
-- **Algorithms:** String/Pattern Matching Algorithms
-- **Version Control:** Git and GitHub
+Pharmacies and hospitals maintain information about medicines, manufacturers, dosage, categories, uses, substitutes, and related keywords.
 
----
+Searching this information using only exact matching may fail when:
 
-## Planned Data
+- The user makes a spelling mistake.
+- The search query contains only a keyword.
+- The user describes symptoms rather than providing an exact medicine name.
 
-The medicine corpus will contain information such as:
-
-- Medicine name
-- Manufacturer
-- Dosage
-- Category
-- Uses
-- Substitutes
-- Other relevant medicine information
+Pharma Search addresses these situations using multiple search algorithms.
 
 ---
 
-## DSA Algorithms
+## 3. Objectives
 
-The project will implement and demonstrate String/Pattern Matching algorithms on the medicine corpus.
+The main objectives of the project are:
 
-The algorithms will be developed progressively during the project phases and evaluated using the project data.
+1. Create a structured medicine corpus.
+2. Implement efficient pattern matching using KMP.
+3. Implement fuzzy medicine-name searching using Edit Distance.
+4. Implement similarity-based searching using Cosine Similarity.
+5. Provide an integrated command-line search interface.
+6. Store and demonstrate test results for the implemented algorithms.
 
 ---
 
-## Repository Structure
+## 4. Project Structure
 
 ```text
-KLH_CSE_2026-27_DSA-3_S6_Team-18_Pharma-Search/
+PharmaSearch/
 │
-├── src/
-├── docs/
+├── .gitignore
+│
 ├── data/
-├── results/
+│   └── medicines.txt
+│
+├── docs/
+│   └── .gitkeep
+│
 ├── reports/
-└── README.md
+│   └── .gitkeep
+│
+├── results/
+│   ├── .gitkeep
+│   ├── kmp_test.txt
+│   ├── fuzzy_test.txt
+│   └── similarity_test.txt
+│
+└── src/
+    ├── PharmaSearch.java
+    ├── FuzzySearch.java
+    └── SimilaritySearch.java
