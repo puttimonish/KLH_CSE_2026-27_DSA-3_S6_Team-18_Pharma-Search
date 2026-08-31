@@ -1,0 +1,25 @@
+==============================================
+       PHARMASEARCH DATA CLEANING REPORT
+==============================================
+
+Input File: data/raw/indian_medicine_data.csv
+Output File: data/processed/medicines_clean.csv
+
+Total records processed: 253973
+Valid active records: 242381
+Discontinued records removed: 7905
+Duplicate records removed: 3687
+Invalid records removed: 0
+
+Cleaning operations:
+1. Removed discontinued medicines
+2. Removed records without medicine names
+3. Removed duplicate medicine records
+4. Trimmed unnecessary whitespace
+5. Normalized medicine text fields
+6. Normalized price values
+7. Generated a clean CSV dataset
+
+==============================================
+Cleaning completed successfully.
+==============================================

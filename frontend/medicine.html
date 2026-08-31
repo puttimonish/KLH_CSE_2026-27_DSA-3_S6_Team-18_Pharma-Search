@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Medicine Details | PharmaSearch</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .details-page {
+            min-height: 100vh;
+            padding: 40px 20px 80px;
+        }
+
+        .details-container {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            background: transparent;
+            color: #087f73;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 10px 0;
+            margin-bottom: 25px;
+            transition: transform 0.2s ease;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+        }
+
+        .medicine-details-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e4e9ef;
+            border-radius: 28px;
+            padding: 42px;
+            box-shadow: 0 20px 60px rgba(20, 35, 60, 0.10);
+            animation: detailsEnter 0.5s ease;
+        }
+
+        @keyframes detailsEnter {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .medicine-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .medicine-icon-large {
+            width: 85px;
+            height: 85px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            background: #eefaf8;
+            margin-bottom: 20px;
+        }
+
+        .medicine-title {
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.1;
+            margin: 0 0 12px;
+            color: #17233d;
+        }
+
+        .medicine-subtitle {
+            font-size: 18px;
+            color: #60708a;
+            margin: 0;
+        }
+
+        .favorite-details-button {
+            border: 1px solid #dfe5ec;
+            background: white;
+            border-radius: 16px;
+            padding: 13px 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .favorite-details-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .favorite-details-button.active {
+            background: #fff1f5;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .detail-item {
+            padding: 22px;
+            background: #f7f9fb;
+            border-radius: 18px;
+            border: 1px solid #edf0f4;
+            transition: transform 0.2s ease;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .detail-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7b8799;
+            margin-bottom: 8px;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #263653;
+            line-height: 1.5;
+        }
+
+        .price-box {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            background: #eefaf8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-label {
+            font-size: 17px;
+            color: #60708a;
+        }
+
+        .price-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #087f73;
+        }
+
+        .details-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .details-action {
+            border: none;
+            border-radius: 15px;
+            padding: 14px 22px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .details-action:hover {
+            transform: translateY(-3px);
+        }
+
+        .primary-action {
+            background: #078b80;
+            color: white;
+        }
+
+        .secondary-action {
+            background: #eef1f5;
+            color: #24324d;
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .not-found-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            .medicine-details-card {
+                padding: 25px;
+                border-radius: 22px;
+            }
+
+            .medicine-top {
+                flex-direction: column;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .price-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .details-actions {
+                flex-direction: column;
+            }
+
+            .details-action {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="logo">
+            💊 PharmaSearch
+        </div>
+
+        <div class="header-info">
+            <span>Medicine Information</span>
+        </div>
+
+    </header>
+
+
+    <main class="details-page">
+
+        <div class="details-container">
+
+            <button
+                class="back-button"
+                onclick="goBack()"
+            >
+                ← Back to Search
+            </button>
+
+
+            <div id="medicineContent">
+
+                <div class="not-found">
+
+                    <div class="not-found-icon">
+                        💊
+                    </div>
+
+                    <h2>Loading medicine...</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+        <p>© 2026 PharmaSearch | Pharmacy Medicine Search System</p>
+    </footer>
+
+
+    <script>
+
+        let medicine = null;
+
+
+        function escapeHTML(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        function loadMedicine() {
+
+            const savedMedicine =
+                localStorage.getItem("selectedMedicine");
+
+            if (!savedMedicine) {
+
+                showNotFound();
+
+                return;
+            }
+
+            try {
+
+                medicine =
+                    JSON.parse(savedMedicine);
+
+                displayMedicine();
+
+            } catch (error) {
+
+                console.error(error);
+
+                showNotFound();
+            }
+        }
+
+
+        function displayMedicine() {
+
+            const container =
+                document.getElementById("medicineContent");
+
+            const name =
+                medicine.name || "Unknown Medicine";
+
+            const manufacturer =
+                medicine.manufacturer || "Not available";
+
+            const type =
+                medicine.type || "Not available";
+
+            const packSize =
+                medicine.packSize || "Not available";
+
+            const composition1 =
+                medicine.composition1 || "Not available";
+
+            const composition2 =
+                medicine.composition2
+                    ? " + " + medicine.composition2
+                    : "";
+
+            const price =
+                Number(medicine.price || 0).toFixed(2);
+
+
+            container.innerHTML = `
+
+                <div class="medicine-details-card">
+
+                    <div class="medicine-top">
+
+                        <div>
+
+                            <div class="medicine-icon-large">
+                                💊
+                            </div>
+
+                            <h1 class="medicine-title">
+                                ${escapeHTML(name)}
+                            </h1>
+
+                            <p class="medicine-subtitle">
+                                Medicine information from PharmaSearch
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            id="favoriteButton"
+                            class="favorite-details-button"
+                            onclick="toggleFavorite()"
+                        >
+                            🤍 Add to Favorites
+                        </button>
+
+                    </div>
+
+
+                    <div class="details-grid">
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Manufacturer
+                            </span>
+
+                            <span class="detail-value">
+                                ${escapeHTML(manufacturer)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Medicine Type
+                            </span>
+
+                            <span class="detail-value">
+                                ${escapeHTML(type)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Pack Size
+                            </span>
+
+                            <span class="detail-value">
+                                ${escapeHTML(packSize)}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Composition
+                            </span>
+
+                            <span class="detail-value">
+                                ${escapeHTML(composition1)}
+                                ${escapeHTML(composition2)}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="price-box">
+
+                        <span class="price-label">
+                            Listed Price
+                        </span>
+
+                        <span class="price-value">
+                            ₹${price}
+                        </span>
+
+                    </div>
+
+
+                    <div class="details-actions">
+
+                        <button
+                            class="details-action primary-action"
+                            onclick="copyMedicine()"
+                        >
+                            📋 Copy Information
+                        </button>
+
+                        <button
+                            class="details-action secondary-action"
+                            onclick="goBack()"
+                        >
+                            ← Search More Medicines
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+            updateFavoriteButton();
+        }
+
+
+        function getMedicineKey() {
+
+            return String(
+                medicine.name || ""
+            ).toLowerCase()
+            + "|"
+            + String(
+                medicine.manufacturer || ""
+            ).toLowerCase();
+        }
+
+
+        function getFavorites() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem("favorites")
+                ) || [];
+
+            } catch {
+
+                return [];
+            }
+        }
+
+
+        function toggleFavorite() {
+
+            if (!medicine) {
+                return;
+            }
+
+            let favorites =
+                getFavorites();
+
+            const key =
+                getMedicineKey();
+
+            const index =
+                favorites.findIndex(
+                    item =>
+                        item.key === key
+                );
+
+
+            if (index >= 0) {
+
+                favorites.splice(index, 1);
+
+            } else {
+
+                favorites.push({
+                    key: key,
+                    medicine: medicine
+                });
+
+            }
+
+
+            localStorage.setItem(
+                "favorites",
+                JSON.stringify(favorites)
+            );
+
+
+            updateFavoriteButton();
+        }
+
+
+        function updateFavoriteButton() {
+
+            const button =
+                document.getElementById(
+                    "favoriteButton"
+                );
+
+            if (!button || !medicine) {
+                return;
+            }
+
+            const favorites =
+                getFavorites();
+
+            const key =
+                getMedicineKey();
+
+            const isFavorite =
+                favorites.some(
+                    item =>
+                        item.key === key
+                );
+
+
+            if (isFavorite) {
+
+                button.textContent =
+                    "❤️ In Favorites";
+
+                button.classList.add(
+                    "active"
+                );
+
+            } else {
+
+                button.textContent =
+                    "🤍 Add to Favorites";
+
+                button.classList.remove(
+                    "active"
+                );
+            }
+        }
+
+
+        async function copyMedicine() {
+
+            if (!medicine) {
+                return;
+            }
+
+            const text = `
+
+${medicine.name || ""}
+
+Manufacturer:
+${medicine.manufacturer || ""}
+
+Type:
+${medicine.type || ""}
+
+Pack Size:
+${medicine.packSize || ""}
+
+Composition:
+${medicine.composition1 || ""}
+${medicine.composition2 || ""}
+
+Price:
+₹${Number(medicine.price || 0).toFixed(2)}
+
+            `.trim();
+
+
+            try {
+
+                await navigator.clipboard.writeText(text);
+
+                alert(
+                    "Medicine information copied!"
+                );
+
+            } catch {
+
+                alert(
+                    "Unable to copy information."
+                );
+            }
+        }
+
+
+        function showNotFound() {
+
+            document.getElementById(
+                "medicineContent"
+            ).innerHTML = `
+
+                <div class="not-found">
+
+                    <div class="not-found-icon">
+                        🔍
+                    </div>
+
+                    <h2>
+                        Medicine not found
+                    </h2>
+
+                    <p>
+                        Please return to the search page.
+                    </p>
+
+                </div>
+
+            `;
+        }
+
+
+        function goBack() {
+
+            window.location.href =
+                "index.html";
+        }
+
+
+        loadMedicine();
+
+    </script>
+
+</body>
+
+</html>

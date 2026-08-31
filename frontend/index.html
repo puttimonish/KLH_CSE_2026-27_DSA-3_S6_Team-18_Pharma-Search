@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PharmaSearch | Smart Medicine Search</title>
+
+    <meta
+        name="description"
+        content="PharmaSearch - intelligent medicine search system"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <div class="logo" onclick="scrollToTop()">
+            <span class="logo-icon">💊</span>
+            <span>Pharma<span>Search</span></span>
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                id="favoritesButton"
+                class="header-button"
+                title="Favorites"
+            >
+                ❤️
+                <span id="favoritesCount">0</span>
+            </button>
+
+            <button
+                id="themeButton"
+                class="header-button"
+                title="Toggle theme"
+            >
+                🌙
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<main>
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            Medicine database online
+        </div>
+
+        <h1>
+            Find the
+            <span>right medicine.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Search medicines by name, composition, manufacturer,
+            type, or pack size using intelligent search algorithms.
+        </p>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-wrapper">
+
+            <div class="search-box">
+
+                <span class="search-icon">🔎</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search medicine or composition..."
+                    autocomplete="off"
+                >
+
+                <button
+                    id="clearButton"
+                    class="clear-button hidden"
+                    title="Clear search"
+                >
+                    ✕
+                </button>
+
+                <button
+                    id="searchButton"
+                    class="search-button"
+                >
+                    Search
+                </button>
+
+            </div>
+
+            <div class="search-hints">
+
+                <span>Try:</span>
+
+                <button class="suggestion" data-query="paracetamol">
+                    paracetamol
+                </button>
+
+                <button class="suggestion" data-query="ibuprofen">
+                    ibuprofen
+                </button>
+
+                <button class="suggestion" data-query="azithromycin">
+                    azithromycin
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- DATABASE STATS -->
+
+        <div class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">💊</div>
+
+                <div>
+                    <strong id="medicineCount">
+                        Loading...
+                    </strong>
+
+                    <span>Medicines</span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">⚡</div>
+
+                <div>
+                    <strong>Smart</strong>
+                    <span>Search</span>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">🧠</div>
+
+                <div>
+                    <strong>3</strong>
+                    <span>Algorithms</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RESULTS ================= -->
+
+<section class="results-section">
+
+    <div class="results-container">
+
+        <div class="results-header">
+
+            <div>
+
+                <p class="section-label">
+                    SEARCH
+                </p>
+
+                <h2>
+                    Medicine Results
+                </h2>
+
+                <p id="resultCount" class="result-count">
+                    Search for a medicine to begin
+                </p>
+
+            </div>
+
+
+            <div class="sort-container">
+
+                <label for="sortSelect">
+                    Sort
+                </label>
+
+                <select id="sortSelect">
+
+                    <option value="relevance">
+                        Relevance
+                    </option>
+
+                    <option value="price-low">
+                        Price: Low → High
+                    </option>
+
+                    <option value="price-high">
+                        Price: High → Low
+                    </option>
+
+                    <option value="name">
+                        Name: A → Z
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div id="loading" class="loading hidden">
+
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div
+            id="errorMessage"
+            class="error hidden"
+        ></div>
+
+
+        <!-- RESULTS -->
+
+        <div
+            id="results"
+            class="results-grid"
+        ></div>
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+            id="emptyState"
+            class="empty-state hidden"
+        >
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h3>
+                No medicines found
+            </h3>
+
+            <p>
+                Try another medicine name, composition,
+                manufacturer, or spelling.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RECENT SEARCHES ================= -->
+
+<section
+    id="recentSection"
+    class="recent-section hidden"
+>
+
+    <div class="recent-container">
+
+        <div class="recent-header">
+
+            <div>
+                <p class="section-label">
+                    HISTORY
+                </p>
+
+                <h2>
+                    Recent Searches
+                </h2>
+            </div>
+
+            <button
+                id="clearHistoryButton"
+                class="text-button"
+            >
+                Clear history
+            </button>
+
+        </div>
+
+        <div id="recentSearches"></div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ================= MEDICINE MODAL ================= -->
+
+<div
+    id="medicineModal"
+    class="modal hidden"
+>
+
+    <div
+        class="modal-overlay"
+        id="modalOverlay"
+    ></div>
+
+    <div class="modal-content">
+
+        <button
+            id="modalClose"
+            class="modal-close"
+        >
+            ✕
+        </button>
+
+        <div id="modalBody"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FAVORITES MODAL ================= -->
+
+<div
+    id="favoritesModal"
+    class="modal hidden"
+>
+
+    <div
+        class="modal-overlay"
+        id="favoritesOverlay"
+    ></div>
+
+    <div class="modal-content favorites-modal">
+
+        <button
+            id="favoritesClose"
+            class="modal-close"
+        >
+            ✕
+        </button>
+
+        <div class="modal-title">
+
+            <span>❤️</span>
+
+            <div>
+                <h2>Your Favorites</h2>
+                <p>Saved medicines</p>
+            </div>
+
+        </div>
+
+        <div id="favoritesList"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div
+    id="toast"
+    class="toast"
+>
+    <span id="toastMessage"></span>
+</div>
+
+
+<!-- ================= BACK TO TOP ================= -->
+
+<button
+    id="backToTop"
+    class="back-to-top hidden"
+    title="Back to top"
+>
+    ↑
+</button>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+            💊 PharmaSearch
+        </div>
+
+        <p>
+            Intelligent Medicine Search System
+        </p>
+
+        <div class="footer-line"></div>
+
+        <small>
+            © 2026 PharmaSearch · Built with Java, Spring Boot & Algorithms
+        </small>
+
+    </div>
+
+</footer>
+
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
