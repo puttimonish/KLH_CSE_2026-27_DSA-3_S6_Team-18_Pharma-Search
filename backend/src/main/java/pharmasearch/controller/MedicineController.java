@@ -45,3 +45,4 @@ public class MedicineController {
         return searchService.getMedicineCount();
     }
 }
+
