@@ -2,7 +2,7 @@
    PHARMASEARCH FRONTEND
    ===================================================== */
 
-const API_BASE_URL = "https://soc-corrections-obligations-family.trycloudflare.com";
+const API_BASE_URL = "https://judges-structures-variation-isp.trycloudflare.com";
 
 
 // =====================================================
