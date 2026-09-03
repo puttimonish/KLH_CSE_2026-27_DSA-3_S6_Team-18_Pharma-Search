@@ -251,48 +251,14 @@ public class SearchService {
              */
             if (!anyKmpMatch && !name.isEmpty()) {
 
-    double fuzzyScore =
-            calculateFuzzyNameScore(
-                    searchQuery,
-                    name
-            );
-
-    if (fuzzyScore >= 0.35) {
-        finalScore = fuzzyScore * 5.0;
-    }
-}
-
-                /*
-                 * Simple length filter.
-                 *
-                 * If the lengths are extremely different,
-                 * the medicine is unlikely to be a useful
-                 * fuzzy match.
-                 */
-                int lengthDifference =
-                        Math.abs(
-                                searchQuery.length()
-                                - name.length()
+                double fuzzyScore =
+                        calculateFuzzyNameScore(
+                                searchQuery,
+                                name
                         );
 
-                if (lengthDifference <=
-                        Math.max(5, searchQuery.length())) {
-
-                    FieldScore fuzzyNameScore =
-                            calculateFieldScore(
-                                    searchQuery,
-                                    name
-                            );
-
-                    /*
-                     * Only keep reasonably relevant fuzzy
-                     * matches.
-                     */
-                    if (fuzzyNameScore.score >= 0.35) {
-
-                        finalScore =
-                                fuzzyNameScore.score * 5.0;
-                    }
+                if (fuzzyScore >= 0.35) {
+                    finalScore = fuzzyScore * 5.0;
                 }
             }
 
@@ -373,6 +339,77 @@ public class SearchService {
     }
 
     /**
+     * Calculates fuzzy similarity between the query and
+     * individual words in the medicine name.
+     *
+     * This allows searches such as:
+     * paracetmol -> paracetamol
+     * amoxcillin -> amoxicillin
+     */
+    private double calculateFuzzyNameScore(
+            String query,
+            String medicineName) {
+
+        if (query == null || medicineName == null) {
+            return 0.0;
+        }
+
+        query = normalize(query);
+        medicineName = normalize(medicineName);
+
+        if (query.isEmpty() || medicineName.isEmpty()) {
+            return 0.0;
+        }
+
+        String[] words = medicineName.split("\\s+");
+
+        double bestScore = 0.0;
+
+        for (String word : words) {
+
+            if (word.isEmpty()) {
+                continue;
+            }
+
+            int distance =
+                    EditDistance.calculate(
+                            query,
+                            word
+                    );
+
+            int maxLength =
+                    Math.max(
+                            query.length(),
+                            word.length()
+                    );
+
+            if (maxLength == 0) {
+                continue;
+            }
+
+            double editSimilarity =
+                    1.0
+                    - ((double) distance / maxLength);
+
+            double cosineSimilarity =
+                    CosineSimilarity.calculate(
+                            query,
+                            word
+                    );
+
+            double score =
+                    (editSimilarity * 0.8)
+                    + (cosineSimilarity * 0.2);
+
+            if (score > bestScore) {
+                bestScore = score;
+            }
+        }
+
+        return bestScore;
+    }
+
+    /**
      * Calculates the search score for one field.
      *
      * Combines:
@@ -380,76 +417,6 @@ public class SearchService {
      * Edit Distance
      * Cosine Similarity
      */
-    /**
- * Calculates fuzzy similarity between the query and
- * individual words in the medicine name.
- *
- * This allows searches such as:
- * paracetmol -> paracetamol
- * amoxcillin -> amoxicillin
- */
-private double calculateFuzzyNameScore(
-        String query,
-        String medicineName) {
-
-    if (query == null || medicineName == null) {
-        return 0.0;
-    }
-
-    query = normalize(query);
-    medicineName = normalize(medicineName);
-
-    if (query.isEmpty() || medicineName.isEmpty()) {
-        return 0.0;
-    }
-
-    String[] words = medicineName.split("\\s+");
-
-    double bestScore = 0.0;
-
-    for (String word : words) {
-
-        if (word.isEmpty()) {
-            continue;
-        }
-
-        int distance =
-                EditDistance.calculate(
-                        query,
-                        word
-                );
-
-        int maxLength =
-                Math.max(
-                        query.length(),
-                        word.length()
-                );
-
-        if (maxLength == 0) {
-            continue;
-        }
-
-        double editSimilarity =
-                1.0
-                - ((double) distance / maxLength);
-
-        double cosineSimilarity =
-                CosineSimilarity.calculate(
-                        query,
-                        word
-                );
-
-        double score =
-                (editSimilarity * 0.8)
-                + (cosineSimilarity * 0.2);
-
-        if (score > bestScore) {
-            bestScore = score;
-        }
-    }
-
-    return bestScore;
-}
     private FieldScore calculateFieldScore(
             String query,
             String field) {
