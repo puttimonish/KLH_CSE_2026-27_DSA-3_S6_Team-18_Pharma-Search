@@ -2,8 +2,7 @@
    PHARMASEARCH FRONTEND
    ===================================================== */
 
-const API_BASE_URL = "https://judges-structures-variation-isp.trycloudflare.com";
-
+const API_BASE_URL = "https://miniature-pancake-69q4j9x5465vh4qx-8080.app.github.dev";
 
 // =====================================================
 // DOM ELEMENTS
