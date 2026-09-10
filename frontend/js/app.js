@@ -130,8 +130,7 @@ const filterStyle =
 
 filterStyle.textContent = `
 
-    .pharma-filter-row,
-    .pharma-sort-row {
+        .pharma-sort-row {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
@@ -182,7 +181,8 @@ filterStyle.textContent = `
 
         .pharma-filter-row,
         .pharma-sort-row {
-            flex-direction: column;
+            fle.pharma-filter-row,
+x-direction: column;
             align-items: flex-start;
             gap: 9px;
         }
@@ -236,7 +236,8 @@ typeFilterContainer.style.gridColumn =
 
 sortRadioContainer.style.gridColumn =
     "1 / -1";
-
+typeFilterContainer.style.marginBottom = "0";
+sortRadioContainer.style.marginTop = "0";
 
 // =====================================================
 // TYPE FILTER EVENTS
