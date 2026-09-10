@@ -339,6 +339,10 @@ function createMedicineCard(
 
     const composition =
         getComposition(medicine);
+        const matchQuality =
+    index < 3 ? "Excellent" :
+    index < 10 ? "Good" :
+    "Related";
 
 
     card.innerHTML = `
@@ -386,13 +390,18 @@ function createMedicineCard(
         </p>
 
 
-        <p>
-            <strong>Composition:</strong>
-            ${highlight(composition || "N/A")}
-        </p>
+       <p>
+    <strong>Composition:</strong>
+    ${highlight(composition || "N/A")}
+</p>
+
+<p>
+    <strong>Match Quality:</strong>
+    ${matchQuality}
+</p>
 
 
-        <div class="card-footer">
+<div class="card-footer">
 
             <p class="price">
                 ₹${formatPrice(medicine.price)}
