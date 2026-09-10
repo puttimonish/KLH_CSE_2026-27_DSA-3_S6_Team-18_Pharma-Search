@@ -6,6 +6,7 @@ const API_BASE_URL = "https://miniature-pancake-69q4j9x5465vh4qx-8080.app.github
 
 // =====================================================
 // DOM ELEMENTS
+// ===================
 // =====================================================
 
 const searchInput =
@@ -37,98 +38,262 @@ const emptyState =
 
 const sortSelect =
     document.getElementById("sortSelect");
-    const typeFilterContainer = document.createElement("div");
+const typeFilterContainer =
+    document.createElement("div");
 
 typeFilterContainer.innerHTML = `
-    <div style="margin: 20px 0;">
+    <div class="pharma-filter-row">
+
         <strong>Type:</strong>
-        <label style="margin-left: 15px;">
-            <input type="checkbox" name="medicineType" value="allopathy">
-            Allopathy
+
+        <label>
+            <input
+                type="checkbox"
+                name="medicineType"
+                value="allopathy"
+            >
+            <span>Allopathy</span>
         </label>
-        <label style="margin-left: 15px;">
-            <input type="checkbox" name="medicineType" value="ayurveda">
-            Ayurveda
+
+        <label>
+            <input
+                type="checkbox"
+                name="medicineType"
+                value="ayurveda"
+            >
+            <span>Ayurveda</span>
         </label>
-        <label style="margin-left: 15px;">
-            <input type="checkbox" name="medicineType" value="homeopathy">
-            Homeopathy
+
+        <label>
+            <input
+                type="checkbox"
+                name="medicineType"
+                value="homeopathy"
+            >
+            <span>Homeopathy</span>
         </label>
+
     </div>
 `;
 
-sortSelect.parentElement.parentElement.insertBefore(
-    typeFilterContainer,
-    sortSelect.parentElement
-);
 
-typeFilterContainer
-    .querySelectorAll('input[name="medicineType"]')
-    .forEach(checkbox => {
-        checkbox.addEventListener("change", () => {
-            displayResults(currentMedicines);
-        });
-    });
-    // SORT RADIO OPTIONS
+// =====================================================
+// SORT RADIO OPTIONS
+// =====================================================
+
 const sortRadioContainer =
     document.createElement("div");
 
 sortRadioContainer.innerHTML = `
-    <div style="margin: 20px 0;">
+    <div class="pharma-sort-row">
+
         <strong>Sort by:</strong>
 
-        <label style="margin-left: 15px;">
+        <label>
             <input
                 type="radio"
                 name="sortOption"
                 value="relevance"
                 checked
             >
-            Relevance
+            <span>Relevance</span>
         </label>
 
-        <label style="margin-left: 15px;">
+        <label>
             <input
                 type="radio"
                 name="sortOption"
                 value="name"
             >
-            Medicine Name
+            <span>Medicine Name</span>
         </label>
 
-        <label style="margin-left: 15px;">
+        <label>
             <input
                 type="radio"
                 name="sortOption"
                 value="price-low"
             >
-            Price
+            <span>Price</span>
         </label>
+
     </div>
 `;
 
+
+// =====================================================
+// FILTER / SORT DESIGN
+// =====================================================
+
+const filterStyle =
+    document.createElement("style");
+
+filterStyle.textContent = `
+
+    .pharma-filter-row,
+    .pharma-sort-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 0;
+    }
+
+    .pharma-filter-row strong,
+    .pharma-sort-row strong {
+        font-weight: 700;
+        margin-right: 4px;
+    }
+
+    .pharma-filter-row label,
+    .pharma-sort-row label {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .pharma-filter-row input,
+    .pharma-sort-row input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .pharma-filter-row span,
+    .pharma-sort-row span {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 700px) {
+
+        .pharma-filter-row,
+        .pharma-sort-row {
+            gap: 12px;
+        }
+
+    }
+
+    @media (max-width: 500px) {
+
+        .pharma-filter-row,
+        .pharma-sort-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 9px;
+        }
+
+    }
+
+`;
+
+document.head.appendChild(filterStyle);
+
+
+// =====================================================
+// HIDE ORIGINAL DROPDOWN
+// =====================================================
+
 sortSelect.parentElement.style.display = "none";
+
 const sortLabel =
-    document.querySelector('label[for="sortSelect"]');
+    document.querySelector(
+        'label[for="sortSelect"]'
+    );
 
 if (sortLabel) {
     sortLabel.style.display = "none";
 }
-sortSelect.parentElement.parentElement.insertBefore(
+
+
+// =====================================================
+// INSERT FILTER AND SORT CONTROLS
+// =====================================================
+
+const controlsParent =
+    sortSelect.parentElement.parentElement;
+
+controlsParent.insertBefore(
+    typeFilterContainer,
+    sortSelect.parentElement
+);
+
+controlsParent.insertBefore(
     sortRadioContainer,
     sortSelect.parentElement
 );
 
-sortRadioContainer
-    .querySelectorAll('input[name="sortOption"]')
-    .forEach(radio => {
-        radio.addEventListener("change", () => {
-            sortSelect.value = radio.value;
 
-            if (currentMedicines.length) {
-                displayResults(currentMedicines);
+// Make both new rows use the full width
+// of the results header.
+
+typeFilterContainer.style.gridColumn =
+    "1 / -1";
+
+sortRadioContainer.style.gridColumn =
+    "1 / -1";
+
+
+// =====================================================
+// TYPE FILTER EVENTS
+// =====================================================
+
+typeFilterContainer
+    .querySelectorAll(
+        'input[name="medicineType"]'
+    )
+    .forEach(checkbox => {
+
+        checkbox.addEventListener(
+            "change",
+            () => {
+
+                if (currentMedicines.length) {
+
+                    displayResults(
+                        currentMedicines
+                    );
+
+                }
+
             }
-        });
+        );
+
+    });
+
+
+// =====================================================
+// SORT RADIO EVENTS
+// =====================================================
+
+sortRadioContainer
+    .querySelectorAll(
+        'input[name="sortOption"]'
+    )
+    .forEach(radio => {
+
+        radio.addEventListener(
+            "change",
+            () => {
+
+                sortSelect.value =
+                    radio.value;
+
+                if (currentMedicines.length) {
+
+                    displayResults(
+                        currentMedicines
+                    );
+
+                }
+
+            }
+        );
+
     });
 
 const themeButton =
