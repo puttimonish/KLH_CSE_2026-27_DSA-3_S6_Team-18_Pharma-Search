@@ -38,27 +38,29 @@ public class SearchService {
      * 5. Pack size
      * 6. Medicine type
      *
-     * Ranking uses:
-     * 1. KMP Pattern Matching
-     * 2. Edit Distance
-     * 3. Cosine Similarity
+     * Final ranking:
      *
-     * Rabin-Karp is used as an additional exact-pattern check.
+     * KMP Score      = 40%
+     * Fuzzy Score    = 30%
+     * Cosine Score   = 30%
      *
-     * A two-stage approach is used for better performance
-     * on the large medicine dataset.
+     * Rabin-Karp is used as an additional exact-pattern
+     * detection method.
      */
     public List<Medicine> search(String query) {
 
-        List<Medicine> medicines = repository.getAllMedicines();
+        List<Medicine> medicines =
+                repository.getAllMedicines();
 
-        List<SearchResult> results = new ArrayList<>();
+        List<SearchResult> results =
+                new ArrayList<>();
 
         if (query == null) {
             return new ArrayList<>();
         }
 
-        String searchQuery = normalize(query);
+        String searchQuery =
+                normalize(query);
 
         if (searchQuery.isEmpty()) {
             return new ArrayList<>();
@@ -66,118 +68,137 @@ public class SearchService {
 
         /*
          * -------------------------------------------------
-         * STAGE 1
+         * SEARCH THROUGH ALL MEDICINES
          * -------------------------------------------------
-         *
-         * Use KMP to quickly identify medicines where
-         * the query occurs as a pattern.
-         *
-         * Rabin-Karp is also checked as a secondary
-         * exact-pattern matcher.
-         *
-         * This avoids performing expensive fuzzy calculations
-         * on every field of every medicine.
          */
         for (Medicine medicine : medicines) {
 
-            String name = normalize(medicine.getName());
-            String composition1 = normalize(medicine.getComposition1());
-            String composition2 = normalize(medicine.getComposition2());
-            String manufacturer = normalize(medicine.getManufacturer());
-            String packSize = normalize(medicine.getPackSize());
-            String type = normalize(medicine.getType());
+            String name =
+                    normalize(medicine.getName());
 
-            /*
-             * Medicine name is the most important field.
-             */
-            boolean nameKmp = KMPAlgorithm.contains(
-                    name,
-                    searchQuery
-            );
+            String composition1 =
+                    normalize(medicine.getComposition1());
 
-            /*
-             * Rabin-Karp exact pattern check.
-             */
-            boolean nameRabinKarp = RabinKarp.contains(
-                    name,
-                    searchQuery
-            );
+            String composition2 =
+                    normalize(medicine.getComposition2());
 
-            /*
-             * Composition is also highly important.
-             */
-            boolean composition1Kmp = KMPAlgorithm.contains(
-                    composition1,
-                    searchQuery
-            );
+            String manufacturer =
+                    normalize(medicine.getManufacturer());
 
-            boolean composition1RabinKarp = RabinKarp.contains(
-                    composition1,
-                    searchQuery
-            );
+            String packSize =
+                    normalize(medicine.getPackSize());
 
-            boolean composition2Kmp = KMPAlgorithm.contains(
-                    composition2,
-                    searchQuery
-            );
-
-            boolean composition2RabinKarp = RabinKarp.contains(
-                    composition2,
-                    searchQuery
-            );
-
-            /*
-             * Other fields.
-             */
-            boolean manufacturerKmp = KMPAlgorithm.contains(
-                    manufacturer,
-                    searchQuery
-            );
-
-            boolean manufacturerRabinKarp = RabinKarp.contains(
-                    manufacturer,
-                    searchQuery
-            );
-
-            boolean packKmp = KMPAlgorithm.contains(
-                    packSize,
-                    searchQuery
-            );
-
-            boolean packRabinKarp = RabinKarp.contains(
-                    packSize,
-                    searchQuery
-            );
-
-            boolean typeKmp = KMPAlgorithm.contains(
-                    type,
-                    searchQuery
-            );
-
-            boolean typeRabinKarp = RabinKarp.contains(
-                    type,
-                    searchQuery
-            );
+            String type =
+                    normalize(medicine.getType());
 
             /*
              * -------------------------------------------------
-             * FAST RELEVANCE CHECK
+             * 1. KMP MATCHING
+             * -------------------------------------------------
+             */
+
+            boolean nameKmp =
+                    KMPAlgorithm.contains(
+                            name,
+                            searchQuery
+                    );
+
+            boolean composition1Kmp =
+                    KMPAlgorithm.contains(
+                            composition1,
+                            searchQuery
+                    );
+
+            boolean composition2Kmp =
+                    KMPAlgorithm.contains(
+                            composition2,
+                            searchQuery
+                    );
+
+            boolean manufacturerKmp =
+                    KMPAlgorithm.contains(
+                            manufacturer,
+                            searchQuery
+                    );
+
+            boolean packKmp =
+                    KMPAlgorithm.contains(
+                            packSize,
+                            searchQuery
+                    );
+
+            boolean typeKmp =
+                    KMPAlgorithm.contains(
+                            type,
+                            searchQuery
+                    );
+
+            /*
+             * KMP score:
+             *
+             * 1.0 = exact pattern found
+             * 0.0 = no pattern found
+             */
+            double kmpScore =
+                    (
+                            nameKmp
+                            || composition1Kmp
+                            || composition2Kmp
+                            || manufacturerKmp
+                            || packKmp
+                            || typeKmp
+                    )
+                    ? 1.0
+                    : 0.0;
+
+            /*
+             * -------------------------------------------------
+             * 2. RABIN-KARP MATCHING
              * -------------------------------------------------
              *
-             * KMP remains the primary pattern matcher.
+             * Rabin-Karp is used as an additional exact
+             * pattern detector.
              *
-             * Rabin-Karp acts as an additional exact-pattern
-             * check without changing the existing KMP scoring.
+             * It does NOT add another percentage to the
+             * final ranking formula.
              */
-            boolean anyKmpMatch =
-                    nameKmp
-                    || composition1Kmp
-                    || composition2Kmp
-                    || manufacturerKmp
-                    || packKmp
-                    || typeKmp;
+            boolean nameRabinKarp =
+                    RabinKarp.contains(
+                            name,
+                            searchQuery
+                    );
 
-            boolean anyRabinKarpMatch =
+            boolean composition1RabinKarp =
+                    RabinKarp.contains(
+                            composition1,
+                            searchQuery
+                    );
+
+            boolean composition2RabinKarp =
+                    RabinKarp.contains(
+                            composition2,
+                            searchQuery
+                    );
+
+            boolean manufacturerRabinKarp =
+                    RabinKarp.contains(
+                            manufacturer,
+                            searchQuery
+                    );
+
+            boolean packRabinKarp =
+                    RabinKarp.contains(
+                            packSize,
+                            searchQuery
+                    );
+
+            boolean typeRabinKarp =
+                    RabinKarp.contains(
+                            type,
+                            searchQuery
+                    );
+
+            boolean rabinKarpMatch =
                     nameRabinKarp
                     || composition1RabinKarp
                     || composition2RabinKarp
@@ -186,172 +207,74 @@ public class SearchService {
                     || typeRabinKarp;
 
             /*
-             * Both algorithms are exact pattern matchers.
-             *
-             * The result is considered an exact candidate if
-             * either matcher detects the pattern.
-             */
-            boolean anyExactPatternMatch =
-                    anyKmpMatch || anyRabinKarpMatch;
-
-            double finalScore = 0.0;
-
-            /*
              * -------------------------------------------------
-             * NAME SCORE
-             * -------------------------------------------------
-             */
-            if (nameKmp || nameRabinKarp) {
-
-                FieldScore nameScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                name
-                        );
-
-                finalScore += nameScore.score * 5.0;
-            }
-
-            /*
-             * -------------------------------------------------
-             * COMPOSITION SCORE
-             * -------------------------------------------------
-             */
-            if (composition1Kmp || composition1RabinKarp) {
-
-                FieldScore compositionScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                composition1
-                        );
-
-                finalScore += compositionScore.score * 4.0;
-            }
-
-            if (composition2Kmp || composition2RabinKarp) {
-
-                FieldScore compositionScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                composition2
-                        );
-
-                finalScore += compositionScore.score * 4.0;
-            }
-
-            /*
-             * -------------------------------------------------
-             * MANUFACTURER SCORE
-             * -------------------------------------------------
-             */
-            if (manufacturerKmp || manufacturerRabinKarp) {
-
-                FieldScore manufacturerScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                manufacturer
-                        );
-
-                finalScore += manufacturerScore.score * 2.0;
-            }
-
-            /*
-             * -------------------------------------------------
-             * PACK SIZE SCORE
-             * -------------------------------------------------
-             */
-            if (packKmp || packRabinKarp) {
-
-                FieldScore packScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                packSize
-                        );
-
-                finalScore += packScore.score;
-            }
-
-            /*
-             * -------------------------------------------------
-             * TYPE SCORE
-             * -------------------------------------------------
-             */
-            if (typeKmp || typeRabinKarp) {
-
-                FieldScore typeScore =
-                        calculateFieldScore(
-                                searchQuery,
-                                type
-                        );
-
-                finalScore += typeScore.score;
-            }
-
-            /*
-             * -------------------------------------------------
-             * FUZZY NAME SEARCH
+             * 3. FUZZY SCORE
              * -------------------------------------------------
              *
-             * If neither exact pattern matcher finds a match,
-             * check the medicine name using Edit Distance
-             * + Cosine Similarity.
+             * Fuzzy matching compares the query against
+             * individual words in the medicine name.
              *
-             * This allows searches such as:
-             *
-             * paracetmol
-             * paracitamol
-             * amoxcillin
-             *
-             * while avoiding expensive calculations on all
-             * other fields.
+             * The score is normalized between 0 and 1.
              */
-            if (!anyExactPatternMatch && !name.isEmpty()) {
-
-                double fuzzyScore =
-                        calculateFuzzyNameScore(
-                                searchQuery,
-                                name
-                        );
-
-                if (fuzzyScore >= 0.35) {
-                    finalScore = fuzzyScore * 5.0;
-                }
-            }
+            double fuzzyScore =
+                    calculateFuzzyNameScore(
+                            searchQuery,
+                            name
+                    );
 
             /*
              * -------------------------------------------------
-             * EXACT MATCH BOOSTS
+             * 4. COSINE SCORE
              * -------------------------------------------------
+             *
+             * Calculate cosine similarity against all
+             * searchable fields and keep the strongest
+             * similarity.
+             *
+             * This produces a normalized 0-1 score.
              */
-
-            if (name.equals(searchQuery)) {
-                finalScore += 10.0;
-            }
-
-            if (composition1.equals(searchQuery)
-                    || composition2.equals(searchQuery)) {
-
-                finalScore += 8.0;
-            }
-
-            if (manufacturer.equals(searchQuery)) {
-                finalScore += 5.0;
-            }
-
-            if (packSize.equals(searchQuery)) {
-                finalScore += 2.0;
-            }
-
-            if (type.equals(searchQuery)) {
-                finalScore += 2.0;
-            }
+            double cosineScore =
+                    calculateCosineScore(
+                            searchQuery,
+                            name,
+                            composition1,
+                            composition2,
+                            manufacturer,
+                            packSize,
+                            type
+                    );
 
             /*
              * -------------------------------------------------
-             * ADD RELEVANT RESULT
+             * 5. FINAL 40 / 30 / 30 SCORE
              * -------------------------------------------------
+             *
+             * KMP       = 40%
+             * Fuzzy     = 30%
+             * Cosine    = 30%
              */
-            if (finalScore > 0) {
+            double finalScore =
+                    (kmpScore * 0.40)
+                    + (fuzzyScore * 0.30)
+                    + (cosineScore * 0.30);
+
+            /*
+             * -------------------------------------------------
+             * RESULT FILTER
+             * -------------------------------------------------
+             *
+             * Exact KMP/Rabin-Karp matches are included.
+             *
+             * Fuzzy-only matches are included when their
+             * similarity is strong enough.
+             */
+            boolean relevant =
+                    kmpScore > 0.0
+                    || rabinKarpMatch
+                    || fuzzyScore >= 0.35
+                    || cosineScore >= 0.35;
+
+            if (relevant && finalScore > 0.0) {
 
                 results.add(
                         new SearchResult(
@@ -364,7 +287,7 @@ public class SearchService {
 
         /*
          * -------------------------------------------------
-         * SORT BY RELEVANCE
+         * SORT BY FINAL RELEVANCE SCORE
          * -------------------------------------------------
          */
         results.sort(
@@ -382,7 +305,10 @@ public class SearchService {
                 new ArrayList<>();
 
         int limit =
-                Math.min(20, results.size());
+                Math.min(
+                        20,
+                        results.size()
+                );
 
         for (int i = 0; i < limit; i++) {
 
@@ -395,10 +321,13 @@ public class SearchService {
     }
 
     /**
-     * Calculates fuzzy similarity between the query and
-     * individual words in the medicine name.
+     * Calculates fuzzy similarity between the query
+     * and individual words in the medicine name.
      *
-     * This allows searches such as:
+     * Uses normalized Edit Distance.
+     *
+     * Examples:
+     *
      * paracetmol -> paracetamol
      * amoxcillin -> amoxicillin
      */
@@ -406,18 +335,28 @@ public class SearchService {
             String query,
             String medicineName) {
 
-        if (query == null || medicineName == null) {
+        if (
+                query == null
+                || medicineName == null
+        ) {
             return 0.0;
         }
 
-        query = normalize(query);
-        medicineName = normalize(medicineName);
+        query =
+                normalize(query);
 
-        if (query.isEmpty() || medicineName.isEmpty()) {
+        medicineName =
+                normalize(medicineName);
+
+        if (
+                query.isEmpty()
+                || medicineName.isEmpty()
+        ) {
             return 0.0;
         }
 
-        String[] words = medicineName.split("\\s+");
+        String[] words =
+                medicineName.split("\\s+");
 
         double bestScore = 0.0;
 
@@ -443,22 +382,35 @@ public class SearchService {
                 continue;
             }
 
+            /*
+             * Normalize edit distance into a
+             * similarity score between 0 and 1.
+             */
             double editSimilarity =
                     1.0
-                    - ((double) distance / maxLength);
-
-            double cosineSimilarity =
-                    CosineSimilarity.calculate(
-                            query,
-                            word
+                    - (
+                        (double) distance
+                        / maxLength
                     );
 
-            double score =
-                    (editSimilarity * 0.8)
-                    + (cosineSimilarity * 0.2);
+            /*
+             * Keep score inside 0-1.
+             */
+            editSimilarity =
+                    Math.max(
+                            0.0,
+                            Math.min(
+                                    1.0,
+                                    editSimilarity
+                            )
+                    );
 
-            if (score > bestScore) {
-                bestScore = score;
+            if (
+                    editSimilarity
+                    > bestScore
+            ) {
+                bestScore =
+                        editSimilarity;
             }
         }
 
@@ -466,95 +418,106 @@ public class SearchService {
     }
 
     /**
-     * Calculates the search score for one field.
+     * Calculates the strongest Cosine Similarity
+     * across all searchable medicine fields.
      *
-     * Combines:
-     * KMP
-     * Edit Distance
-     * Cosine Similarity
-     *
-     * Rabin-Karp is used as an additional exact-pattern
-     * verification.
+     * Cosine similarity is normalized between 0 and 1.
      */
-    private FieldScore calculateFieldScore(
+    private double calculateCosineScore(
+            String query,
+            String name,
+            String composition1,
+            String composition2,
+            String manufacturer,
+            String packSize,
+            String type) {
+
+        double bestScore = 0.0;
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                name
+                        )
+                );
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                composition1
+                        )
+                );
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                composition2
+                        )
+                );
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                manufacturer
+                        )
+                );
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                packSize
+                        )
+                );
+
+        bestScore =
+                Math.max(
+                        bestScore,
+                        calculateCosine(
+                                query,
+                                type
+                        )
+                );
+
+        return bestScore;
+    }
+
+    /**
+     * Safely calculates cosine similarity for one field.
+     */
+    private double calculateCosine(
             String query,
             String field) {
 
-        if (field == null || field.isEmpty()) {
-            return new FieldScore(0.0);
+        if (
+                field == null
+                || field.isEmpty()
+        ) {
+            return 0.0;
         }
 
-        /*
-         * -------------------------------------------------
-         * 1. KMP PATTERN MATCHING
-         * -------------------------------------------------
-         */
-        boolean kmpMatch =
-                KMPAlgorithm.contains(
-                        field,
-                        query
-                );
-
-        /*
-         * -------------------------------------------------
-         * 2. RABIN-KARP PATTERN MATCHING
-         * -------------------------------------------------
-         */
-        boolean rabinKarpMatch =
-                RabinKarp.contains(
-                        field,
-                        query
-                );
-
-        /*
-         * -------------------------------------------------
-         * 3. EDIT DISTANCE
-         * -------------------------------------------------
-         */
-        int editDistance =
-                EditDistance.calculate(
-                        query,
-                        field
-                );
-
-        /*
-         * -------------------------------------------------
-         * 4. COSINE SIMILARITY
-         * -------------------------------------------------
-         */
-        double cosineScore =
+        double score =
                 CosineSimilarity.calculate(
                         query,
                         field
                 );
 
-        /*
-         * -------------------------------------------------
-         * COMBINED SCORE
-         * -------------------------------------------------
-         */
-        double score =
-                cosineScore;
-
-        /*
-         * KMP substring match receives a strong boost.
-         *
-         * Rabin-Karp can also confirm the same exact pattern.
-         *
-         * KMP remains the primary scoring algorithm.
-         */
-        if (kmpMatch || rabinKarpMatch) {
-            score += 1.0;
-        }
-
-        /*
-         * Smaller edit distance gives a higher score.
-         */
-        score +=
-                1.0 /
-                (1.0 + editDistance);
-
-        return new FieldScore(score);
+        return Math.max(
+                0.0,
+                Math.min(
+                        1.0,
+                        score
+                )
+        );
     }
 
     /**
@@ -564,7 +527,8 @@ public class SearchService {
      * removes unnecessary whitespace,
      * and handles null values safely.
      */
-    private String normalize(String value) {
+    private String normalize(
+            String value) {
 
         if (value == null) {
             return "";
@@ -573,19 +537,10 @@ public class SearchService {
         return value
                 .toLowerCase(Locale.ROOT)
                 .trim()
-                .replaceAll("\\s+", " ");
-    }
-
-    /**
-     * Stores the score of an individual field.
-     */
-    private static class FieldScore {
-
-        private final double score;
-
-        public FieldScore(double score) {
-            this.score = score;
-        }
+                .replaceAll(
+                        "\\s+",
+                        " "
+                );
     }
 
     /**
@@ -600,8 +555,11 @@ public class SearchService {
                 Medicine medicine,
                 double score) {
 
-            this.medicine = medicine;
-            this.score = score;
+            this.medicine =
+                    medicine;
+
+            this.score =
+                    score;
         }
 
         public Medicine getMedicine() {
