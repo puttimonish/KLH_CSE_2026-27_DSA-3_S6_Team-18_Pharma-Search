@@ -69,6 +69,62 @@ typeFilterContainer
             displayResults(currentMedicines);
         });
     });
+    // SORT RADIO OPTIONS
+const sortRadioContainer =
+    document.createElement("div");
+
+sortRadioContainer.innerHTML = `
+    <div style="margin: 20px 0;">
+        <strong>Sort by:</strong>
+
+        <label style="margin-left: 15px;">
+            <input
+                type="radio"
+                name="sortOption"
+                value="relevance"
+                checked
+            >
+            Relevance
+        </label>
+
+        <label style="margin-left: 15px;">
+            <input
+                type="radio"
+                name="sortOption"
+                value="name"
+            >
+            Medicine Name
+        </label>
+
+        <label style="margin-left: 15px;">
+            <input
+                type="radio"
+                name="sortOption"
+                value="price-low"
+            >
+            Price
+        </label>
+    </div>
+`;
+
+sortSelect.style.display = "none";
+
+sortSelect.parentElement.parentElement.insertBefore(
+    sortRadioContainer,
+    sortSelect.parentElement
+);
+
+sortRadioContainer
+    .querySelectorAll('input[name="sortOption"]')
+    .forEach(radio => {
+        radio.addEventListener("change", () => {
+            sortSelect.value = radio.value;
+
+            if (currentMedicines.length) {
+                displayResults(currentMedicines);
+            }
+        });
+    });
 
 const themeButton =
     document.getElementById("themeButton");
