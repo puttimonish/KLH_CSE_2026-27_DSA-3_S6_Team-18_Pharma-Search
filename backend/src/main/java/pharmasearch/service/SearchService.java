@@ -3,6 +3,7 @@ package pharmasearch.service;
 import pharmasearch.algorithm.CosineSimilarity;
 import pharmasearch.algorithm.EditDistance;
 import pharmasearch.algorithm.KMPAlgorithm;
+import pharmasearch.algorithm.RabinKarp;
 import pharmasearch.model.Medicine;
 import pharmasearch.repository.MedicineRepository;
 
@@ -42,6 +43,8 @@ public class SearchService {
      * 2. Edit Distance
      * 3. Cosine Similarity
      *
+     * Rabin-Karp is used as an additional exact-pattern check.
+     *
      * A two-stage approach is used for better performance
      * on the large medicine dataset.
      */
@@ -69,6 +72,9 @@ public class SearchService {
          * Use KMP to quickly identify medicines where
          * the query occurs as a pattern.
          *
+         * Rabin-Karp is also checked as a secondary
+         * exact-pattern matcher.
+         *
          * This avoids performing expensive fuzzy calculations
          * on every field of every medicine.
          */
@@ -90,6 +96,14 @@ public class SearchService {
             );
 
             /*
+             * Rabin-Karp exact pattern check.
+             */
+            boolean nameRabinKarp = RabinKarp.contains(
+                    name,
+                    searchQuery
+            );
+
+            /*
              * Composition is also highly important.
              */
             boolean composition1Kmp = KMPAlgorithm.contains(
@@ -97,7 +111,17 @@ public class SearchService {
                     searchQuery
             );
 
+            boolean composition1RabinKarp = RabinKarp.contains(
+                    composition1,
+                    searchQuery
+            );
+
             boolean composition2Kmp = KMPAlgorithm.contains(
+                    composition2,
+                    searchQuery
+            );
+
+            boolean composition2RabinKarp = RabinKarp.contains(
                     composition2,
                     searchQuery
             );
@@ -110,7 +134,17 @@ public class SearchService {
                     searchQuery
             );
 
+            boolean manufacturerRabinKarp = RabinKarp.contains(
+                    manufacturer,
+                    searchQuery
+            );
+
             boolean packKmp = KMPAlgorithm.contains(
+                    packSize,
+                    searchQuery
+            );
+
+            boolean packRabinKarp = RabinKarp.contains(
                     packSize,
                     searchQuery
             );
@@ -120,16 +154,20 @@ public class SearchService {
                     searchQuery
             );
 
+            boolean typeRabinKarp = RabinKarp.contains(
+                    type,
+                    searchQuery
+            );
+
             /*
              * -------------------------------------------------
              * FAST RELEVANCE CHECK
              * -------------------------------------------------
              *
-             * If there is no KMP match anywhere, we only
-             * perform fuzzy matching on the medicine name.
+             * KMP remains the primary pattern matcher.
              *
-             * This keeps typo-tolerant search available without
-             * calculating expensive metrics for every field.
+             * Rabin-Karp acts as an additional exact-pattern
+             * check without changing the existing KMP scoring.
              */
             boolean anyKmpMatch =
                     nameKmp
@@ -139,6 +177,23 @@ public class SearchService {
                     || packKmp
                     || typeKmp;
 
+            boolean anyRabinKarpMatch =
+                    nameRabinKarp
+                    || composition1RabinKarp
+                    || composition2RabinKarp
+                    || manufacturerRabinKarp
+                    || packRabinKarp
+                    || typeRabinKarp;
+
+            /*
+             * Both algorithms are exact pattern matchers.
+             *
+             * The result is considered an exact candidate if
+             * either matcher detects the pattern.
+             */
+            boolean anyExactPatternMatch =
+                    anyKmpMatch || anyRabinKarpMatch;
+
             double finalScore = 0.0;
 
             /*
@@ -146,7 +201,7 @@ public class SearchService {
              * NAME SCORE
              * -------------------------------------------------
              */
-            if (nameKmp) {
+            if (nameKmp || nameRabinKarp) {
 
                 FieldScore nameScore =
                         calculateFieldScore(
@@ -162,7 +217,7 @@ public class SearchService {
              * COMPOSITION SCORE
              * -------------------------------------------------
              */
-            if (composition1Kmp) {
+            if (composition1Kmp || composition1RabinKarp) {
 
                 FieldScore compositionScore =
                         calculateFieldScore(
@@ -173,7 +228,7 @@ public class SearchService {
                 finalScore += compositionScore.score * 4.0;
             }
 
-            if (composition2Kmp) {
+            if (composition2Kmp || composition2RabinKarp) {
 
                 FieldScore compositionScore =
                         calculateFieldScore(
@@ -189,7 +244,7 @@ public class SearchService {
              * MANUFACTURER SCORE
              * -------------------------------------------------
              */
-            if (manufacturerKmp) {
+            if (manufacturerKmp || manufacturerRabinKarp) {
 
                 FieldScore manufacturerScore =
                         calculateFieldScore(
@@ -205,7 +260,7 @@ public class SearchService {
              * PACK SIZE SCORE
              * -------------------------------------------------
              */
-            if (packKmp) {
+            if (packKmp || packRabinKarp) {
 
                 FieldScore packScore =
                         calculateFieldScore(
@@ -221,7 +276,7 @@ public class SearchService {
              * TYPE SCORE
              * -------------------------------------------------
              */
-            if (typeKmp) {
+            if (typeKmp || typeRabinKarp) {
 
                 FieldScore typeScore =
                         calculateFieldScore(
@@ -237,8 +292,9 @@ public class SearchService {
              * FUZZY NAME SEARCH
              * -------------------------------------------------
              *
-             * If KMP did not find a match, check the medicine
-             * name using Edit Distance + Cosine Similarity.
+             * If neither exact pattern matcher finds a match,
+             * check the medicine name using Edit Distance
+             * + Cosine Similarity.
              *
              * This allows searches such as:
              *
@@ -249,7 +305,7 @@ public class SearchService {
              * while avoiding expensive calculations on all
              * other fields.
              */
-            if (!anyKmpMatch && !name.isEmpty()) {
+            if (!anyExactPatternMatch && !name.isEmpty()) {
 
                 double fuzzyScore =
                         calculateFuzzyNameScore(
@@ -416,6 +472,9 @@ public class SearchService {
      * KMP
      * Edit Distance
      * Cosine Similarity
+     *
+     * Rabin-Karp is used as an additional exact-pattern
+     * verification.
      */
     private FieldScore calculateFieldScore(
             String query,
@@ -438,7 +497,18 @@ public class SearchService {
 
         /*
          * -------------------------------------------------
-         * 2. EDIT DISTANCE
+         * 2. RABIN-KARP PATTERN MATCHING
+         * -------------------------------------------------
+         */
+        boolean rabinKarpMatch =
+                RabinKarp.contains(
+                        field,
+                        query
+                );
+
+        /*
+         * -------------------------------------------------
+         * 3. EDIT DISTANCE
          * -------------------------------------------------
          */
         int editDistance =
@@ -449,7 +519,7 @@ public class SearchService {
 
         /*
          * -------------------------------------------------
-         * 3. COSINE SIMILARITY
+         * 4. COSINE SIMILARITY
          * -------------------------------------------------
          */
         double cosineScore =
@@ -468,8 +538,12 @@ public class SearchService {
 
         /*
          * KMP substring match receives a strong boost.
+         *
+         * Rabin-Karp can also confirm the same exact pattern.
+         *
+         * KMP remains the primary scoring algorithm.
          */
-        if (kmpMatch) {
+        if (kmpMatch || rabinKarpMatch) {
             score += 1.0;
         }
 
