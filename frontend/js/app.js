@@ -37,6 +37,38 @@ const emptyState =
 
 const sortSelect =
     document.getElementById("sortSelect");
+    const typeFilterContainer = document.createElement("div");
+
+typeFilterContainer.innerHTML = `
+    <div style="margin: 20px 0;">
+        <strong>Type:</strong>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" name="medicineType" value="allopathy">
+            Allopathy
+        </label>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" name="medicineType" value="ayurveda">
+            Ayurveda
+        </label>
+        <label style="margin-left: 15px;">
+            <input type="checkbox" name="medicineType" value="homeopathy">
+            Homeopathy
+        </label>
+    </div>
+`;
+
+sortSelect.parentElement.parentElement.insertBefore(
+    typeFilterContainer,
+    sortSelect.parentElement
+);
+
+typeFilterContainer
+    .querySelectorAll('input[name="medicineType"]')
+    .forEach(checkbox => {
+        checkbox.addEventListener("change", () => {
+            displayResults(currentMedicines);
+        });
+    });
 
 const themeButton =
     document.getElementById("themeButton");
@@ -245,6 +277,21 @@ function displayResults(medicines) {
 
     let sorted =
         [...medicines];
+            const selectedTypes =
+        [...document.querySelectorAll(
+            'input[name="medicineType"]:checked'
+        )].map(
+            checkbox => checkbox.value.toLowerCase()
+        );
+
+    if (selectedTypes.length > 0) {
+        sorted = sorted.filter(
+            medicine =>
+                selectedTypes.includes(
+                    String(medicine.type || "").toLowerCase()
+                )
+        );
+    }
 
 
     // -----------------------------
