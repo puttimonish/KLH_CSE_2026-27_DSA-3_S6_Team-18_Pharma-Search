@@ -107,8 +107,13 @@ sortRadioContainer.innerHTML = `
     </div>
 `;
 
-sortSelect.style.display = "none";
+sortSelect.parentElement.style.display = "none";
+const sortLabel =
+    document.querySelector('label[for="sortSelect"]');
 
+if (sortLabel) {
+    sortLabel.style.display = "none";
+}
 sortSelect.parentElement.parentElement.insertBefore(
     sortRadioContainer,
     sortSelect.parentElement
