@@ -38,6 +38,13 @@ const emptyState =
 
 const sortSelect =
     document.getElementById("sortSelect");
+    // Hide algorithm count from the public website
+const algorithmStatCard =
+    document.querySelector(".stats .stat-card:nth-child(3)");
+
+if (algorithmStatCard) {
+    algorithmStatCard.style.display = "none";
+}
 const typeFilterContainer =
     document.createElement("div");
 
